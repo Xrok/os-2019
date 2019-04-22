@@ -228,6 +228,9 @@ int main(int argc, char const *argv[])
 	compTime = compTime + (finish.tv_usec - start.tv_usec);
 	Time = (double)compTime;
 
+	//pmat(a,rowsa,colsa);
+	//pmat(b,rowsb,colsb);
+	//pmat(c,rowsa,colsb);
 	printf("Application time: %f Micro secs\n",(double)Time);
 
 
