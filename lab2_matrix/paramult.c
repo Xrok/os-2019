@@ -3,7 +3,7 @@
 #include <time.h>
 #include <pthread.h>
 #include <sys/time.h>
-#define NUM_THREADS 4
+#define NUM_THREADS 2
 
 
 struct args
