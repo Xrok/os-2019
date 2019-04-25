@@ -10,8 +10,8 @@
 
 int palos[NUM_MAGOS];
 int comida_acum = 0;
-int alimento = 1;
-int total_alimento = 1*5;
+int alimento = 20;
+int total_alimento = 20*5;//alimento*cant_magos
 	
 pthread_mutex_t lock;
 pthread_barrier_t barrera;
@@ -111,7 +111,7 @@ int main(int argc, char const *argv[])
 	pthread_barrier_init(&barrera,NULL,NUM_MAGOS);
 
 
-for (int j = 0; j < 3; ++j)
+for (int j = 0; j < 20; ++j)
 {
 	
 	gettimeofday(&start, 0);
