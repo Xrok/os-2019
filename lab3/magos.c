@@ -1,18 +1,72 @@
 #include <stdio.h>
 #include <pthread.h>
+#include<stdlib.h>
+#include <unistd.h>
+#include <sys/time.h>
+#include <time.h>
+
 #define NUM_MAGOS 5
 
-struct mesa
-{
-	int mago;
-	int** palo;
-	int** plato;
 
+int palos[NUM_MAGOS];
+	
+pthread_mutex_t lock;
+
+struct persona
+{
+	int id;
 };
 
-
-
 void * cena (void *arg){
+
+	struct persona* mago;
+
+	mago = (struct persona*) arg ;
+
+	int id = mago->id;
+
+	int cant_palos=0;
+	int num_palos[2]={0,0};
+	int comida = 20;
+	
+	while(comida){
+
+		//BARRERAAAA----------------
+		for (int i = 0; i < NUM_MAGOS; ++i)
+		{
+			
+			if (cant_palos<2){
+				pthread_mutex_lock(&lock);
+				if (palos[i]==0)
+				{
+
+					num_palos[cant_palos]=i;
+					palos[i]= id;
+					cant_palos++;
+				}
+				pthread_mutex_unlock( &lock);		
+			}
+		}
+		if (cant_palos==2)
+		{
+			comida--;
+			sleep(1);
+			printf("Comiendo filosofo %d\n", id);
+		}else{
+			printf("Hablando filosofo %d\n", id);
+		}
+		//BARRERAAAA----------------
+		for (int i = 0; i < cant_palos; ++i)
+		{
+			palos[num_palos[i]]=0;
+		}
+		for (int i = 0; i < 2; ++i)
+		{
+			num_palos[i]=0;
+		}
+		cant_palos=0;
+	}
+	
 
 
 }
@@ -20,42 +74,47 @@ void * cena (void *arg){
 
 
 
-
 int main(int argc, char const *argv[])
 {	
+	struct timeval start;
+	struct timeval finish;
+	long compTime;
+	double Time;
+
 	pthread_t magos[NUM_MAGOS];
-
-	//int palo[5];
-	//int plato[5];
 	
-	pthread_mutex_t lock;
+	pthread_mutex_init(&lock,NULL);
 
-	int** palo = malloc(5*sizeof(int*));
-	int** plato = malloc(5*sizeof(int*));
-	
 
-	for (int i = 0; i < 5; ++i)
+
+	gettimeofday(&start, 0);
+
+	for (int i = 0; i < NUM_MAGOS; ++i)
 	{
-		palo[i] = malloc(2*sizeof(int));
-		plato[i] = malloc(2*sizeof(int));
+		struct persona *data = (struct persona*)malloc(sizeof(struct persona));
+
+
+		data->id=i;
+		
+		pthread_create(&magos[i],NULL,cena,(void*)data);
+
 	}
 
-
-	
 
 
 	for (int i = 0; i < NUM_MAGOS; ++i)
 	{
-		mesa *data = malloc(sizeof(mesa));
-
-		data->palo=palo;
-		data->plato=plato;
-		data->mago=i;
-		
-		pthread_created(magos[i],NULL,cena,&data);
+		pthread_join(magos[i],NULL);
 	}
+	
+	gettimeofday(&finish, 0);
 
 
+	compTime = (finish.tv_sec - start.tv_sec) * 1000000;
+	compTime = compTime + (finish.tv_usec - start.tv_usec);
+	Time = (double)compTime/1000000;
+
+	printf("Tiempo de la cena %f\n", Time);
 //power of the crowd
 	return 0;
 }
