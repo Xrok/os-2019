@@ -16,12 +16,18 @@ int total_alimento = 2*5;
 pthread_mutex_t lock;
 pthread_barrier_t barrera;
 
+void set_total_to_0(){
+	comida_acum =0;
+}
+
 struct persona
 {
 	int id;
 };
 
+
 void * cena (void *arg){
+	set_total_to_0();
 
 	struct persona* mago;
 
