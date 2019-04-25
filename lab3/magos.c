@@ -11,7 +11,7 @@
 int palos[NUM_MAGOS];
 int comida_acum = 0;
 int alimento = 2;
-int total_alimento = 5*alimento;
+int total_alimento = 2*5;
 	
 pthread_mutex_t lock;
 pthread_barrier_t barrera;
@@ -65,10 +65,10 @@ void * cena (void *arg){
 			comida_acum++;
 			pthread_mutex_unlock( &lock);
 
-			sleep(1);
+			sleep(4);
 			printf("Comiendo filosofo %d\n", id);
 		}else{
-			sleep(1);
+			sleep(4);
 			printf("Hablando filosofo %d\n", id);
 		}
 		pthread_barrier_wait(&barrera);
@@ -101,7 +101,7 @@ int main(int argc, char const *argv[])
 	
 	pthread_mutex_init(&lock,NULL);
 
-	//pthread_barrier_init(&barrera,NULL,NUM_MAGOS);
+	pthread_barrier_init(&barrera,NULL,NUM_MAGOS);
 
 	gettimeofday(&start, 0);
 
@@ -131,6 +131,5 @@ int main(int argc, char const *argv[])
 	Time = (double)compTime/1000000;
 
 	printf("Tiempo de la cena %f\n", Time);
-//power of the crowd
 	return 0;
 }
