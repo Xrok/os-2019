@@ -10,8 +10,8 @@
 
 int palos[NUM_MAGOS];
 int comida_acum = 0;
-int alimento = 2;
-int total_alimento = 2*5;
+int alimento = 1;
+int total_alimento = 1*5;
 	
 pthread_mutex_t lock;
 pthread_barrier_t barrera;
@@ -111,7 +111,7 @@ int main(int argc, char const *argv[])
 	pthread_barrier_init(&barrera,NULL,NUM_MAGOS);
 
 
-for (int j = 0; j < 20; ++j)
+for (int j = 0; j < 3; ++j)
 {
 	
 	gettimeofday(&start, 0);
@@ -135,7 +135,7 @@ for (int j = 0; j < 20; ++j)
 	compTime = compTime + (finish.tv_usec - start.tv_usec);
 	Time = (double)compTime/1000000;
 	tiempo_prom=tiempo_prom+Time;
-	printf("Tiempo de la cena N# %d: %f\n", j,Time);
+	printf("Tiempo de la cena N# %d: %f\n", j+1,Time);
 
 }
 
