@@ -96,6 +96,7 @@ int main(int argc, char const *argv[])
 	struct timeval finish;
 	long compTime;
 	double Time;
+	double tiempo_prom=0;
 
 	pthread_t magos[NUM_MAGOS];
 	
@@ -103,20 +104,18 @@ int main(int argc, char const *argv[])
 
 	pthread_barrier_init(&barrera,NULL,NUM_MAGOS);
 
+
+for (int j = 0; j < 20; ++j)
+{
+	
 	gettimeofday(&start, 0);
 
 	for (int i = 0; i < NUM_MAGOS; ++i)
 	{
 		struct persona *data = (struct persona*)malloc(sizeof(struct persona));
-
-
 		data->id=i;
-		
 		pthread_create(&magos[i],NULL,cena,(void*)data);
-
 	}
-
-
 
 	for (int i = 0; i < NUM_MAGOS; ++i)
 	{
@@ -129,7 +128,13 @@ int main(int argc, char const *argv[])
 	compTime = (finish.tv_sec - start.tv_sec) * 1000000;
 	compTime = compTime + (finish.tv_usec - start.tv_usec);
 	Time = (double)compTime/1000000;
+	tiempo_prom=tiempo_prom+Time;
+	printf("Tiempo de la cena N# %f: %f\n", j,Time);
 
-	printf("Tiempo de la cena %f\n", Time);
+}
+
+printf("Tiempo en promedio de la cena: %f\n",tiempo_prom/20 );
+
+
 	return 0;
 }
