@@ -129,7 +129,7 @@ for (int j = 0; j < 20; ++j)
 	compTime = compTime + (finish.tv_usec - start.tv_usec);
 	Time = (double)compTime/1000000;
 	tiempo_prom=tiempo_prom+Time;
-	printf("Tiempo de la cena N# %f: %f\n", j,Time);
+	printf("Tiempo de la cena N# %d: %f\n", j,Time);
 
 }
 
