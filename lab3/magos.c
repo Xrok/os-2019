@@ -11,6 +11,7 @@
 int palos[NUM_MAGOS];
 	
 pthread_mutex_t lock;
+pthread_barrier_t barrera;
 
 struct persona
 {
@@ -27,11 +28,11 @@ void * cena (void *arg){
 
 	int cant_palos=0;
 	int num_palos[2]={0,0};
-	int comida = 20;
-	
+	int comida = 2;
+	pthread_barrier_wait(&barrera);
+
 	while(comida){
 
-		//BARRERAAAA----------------
 		for (int i = 0; i < NUM_MAGOS; ++i)
 		{
 			
@@ -53,9 +54,10 @@ void * cena (void *arg){
 			sleep(1);
 			printf("Comiendo filosofo %d\n", id);
 		}else{
+			sleep(1);
 			printf("Hablando filosofo %d\n", id);
 		}
-		//BARRERAAAA----------------
+		//pthread_barrier_wait(&barrera);
 		for (int i = 0; i < cant_palos; ++i)
 		{
 			palos[num_palos[i]]=0;
@@ -85,7 +87,7 @@ int main(int argc, char const *argv[])
 	
 	pthread_mutex_init(&lock,NULL);
 
-
+	pthread_barrier_init(&barrera,NULL,NUM_MAGOS);
 
 	gettimeofday(&start, 0);
 
