@@ -9,6 +9,9 @@
 
 
 int palos[NUM_MAGOS];
+int comida_acum = 0;
+int alimento = 2;
+int total_alimento = NUM_MAGOS*alimento;
 	
 pthread_mutex_t lock;
 pthread_barrier_t barrera;
@@ -28,29 +31,40 @@ void * cena (void *arg){
 
 	int cant_palos=0;
 	int num_palos[2]={0,0};
-	int comida = 2;
-	pthread_barrier_wait(&barrera);
+	int comida = alimento;
 
-	while(comida){
+	while(1){
+		pthread_barrier_wait(&barrera);
+		if (comida_acum==total_alimento)
+		{
+			break;
+		}
 
 		for (int i = 0; i < NUM_MAGOS; ++i)
 		{
-			
-			if (cant_palos<2){
-				pthread_mutex_lock(&lock);
-				if (palos[i]==0)
+			if (comida)
+			{
+				if (cant_palos<2)
 				{
+					pthread_mutex_lock(&lock);
+					if (palos[i]==0)
+					{
 
-					num_palos[cant_palos]=i;
-					palos[i]= id;
-					cant_palos++;
+						num_palos[cant_palos]=i;
+						palos[i]= id;
+						cant_palos++;
+					}
+					pthread_mutex_unlock( &lock);		
 				}
-				pthread_mutex_unlock( &lock);		
 			}
 		}
 		if (cant_palos==2)
 		{
 			comida--;
+			pthread_mutex_lock(&lock);
+			comida_acum++;
+			pthread_mutex_unlock( &lock);
+
 			sleep(1);
 			printf("Comiendo filosofo %d\n", id);
 		}else{
