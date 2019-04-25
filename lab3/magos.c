@@ -5,7 +5,7 @@
 #include <sys/time.h>
 #include <time.h>
 
-#define NUM_MAGOS 5
+int NUM_MAGOS =5;
 
 
 int palos[NUM_MAGOS];
