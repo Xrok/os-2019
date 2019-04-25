@@ -5,13 +5,13 @@
 #include <sys/time.h>
 #include <time.h>
 
-int NUM_MAGOS =5;
+#define NUM_MAGOS 5
 
 
 int palos[NUM_MAGOS];
 int comida_acum = 0;
 int alimento = 2;
-int total_alimento = NUM_MAGOS*alimento;
+int total_alimento = 5*alimento;
 	
 pthread_mutex_t lock;
 pthread_barrier_t barrera;
@@ -71,7 +71,7 @@ void * cena (void *arg){
 			sleep(1);
 			printf("Hablando filosofo %d\n", id);
 		}
-		//pthread_barrier_wait(&barrera);
+		pthread_barrier_wait(&barrera);
 		for (int i = 0; i < cant_palos; ++i)
 		{
 			palos[num_palos[i]]=0;
@@ -101,7 +101,7 @@ int main(int argc, char const *argv[])
 	
 	pthread_mutex_init(&lock,NULL);
 
-	pthread_barrier_init(&barrera,NULL,NUM_MAGOS);
+	//pthread_barrier_init(&barrera,NULL,NUM_MAGOS);
 
 	gettimeofday(&start, 0);
 
