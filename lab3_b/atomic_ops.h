@@ -408,7 +408,27 @@ static inline void tatas_release(tatas_lock_t* L)
 }
 
 ////////////////////////////////////////
-// ticket lock
+///// tatas lock without backoff
+
+static inline void tatas_acquire_slowpath_without(tatas_lock_t* L)
+{
+    int b = 64;
+
+    do
+    {
+    }
+    while (tas(L));
+}
+
+static inline void tatas_acquire_without(tatas_lock_t* L)
+{
+    if (tas(L))
+        tatas_acquire_slowpath_without(L);
+}
+////////////////////////////////////////
+// ticket lock 
+// 
+
 
 extern "C"
 {
