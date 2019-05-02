@@ -6,6 +6,7 @@
 
 
 #define NUM_THREADS 2
+#define TIMES 1000
 
 int cuenta=0;
 pthread_mutex_t lock;
@@ -78,36 +79,44 @@ void*func_ticket(void* arg)
 }
 
 
-
-
-
 int main(int argc, char const *argv[])
 {
 	pthread_t threads[NUM_THREADS];
 
 	pthread_mutex_init(&lock,NULL);
-	mutex=0;
-	mutex_ticket.next_ticket=0;
-	mutex_ticket.now_serving=0;
-	double start,end,time;
+	hrtime_t mil =1000;
 
-	start= gethrtime_x86();
-	printf("start time %f \n",start);
-
-	for (int i = 0; i < NUM_THREADS; ++i)
+	for (int i = 0; i < TIMES; ++i)
 	{
-		pthread_create(&threads[i],NULL,func_ticket,NULL);
+		mutex=0;
+		mutex_ticket.next_ticket=0;
+		mutex_ticket.now_serving=0;
+		double start,end,threadsime;
+
+		
+			
+		start= gethrtime_x86();
+		printf("start time %f \n",start);
+
+		for (int i = 0; i < NUM_THREADS; ++i)
+		{
+			pthread_create(&threads[i],NULL,func_ticket,NULL);
+		}
+
+		for (int i = 0; i < NUM_THREADS; ++i)
+		{
+			pthread_join(threads[i], NULL);
+		}
+
+		end= gethrtime_x86();
+		time=end-start;
+
 	}
 
-	for (int i = 0; i < NUM_THREADS; ++i)
-	{
-		pthread_join(threads[i], NULL);
-	}
-	end= gethrtime_x86();
-	printf("end time %f\n",end);
+	time=time/1000.0;
+		
 
-	time=end-start;
-
-	printf("resultado: %d\t tiempo: %f \n",cuenta,time );
+	printf("resultado: %d\t tiempo: %d \n",cuenta, time);
 	return 0;
+
 }
