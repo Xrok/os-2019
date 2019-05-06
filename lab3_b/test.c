@@ -5,6 +5,7 @@
 int main(int argc, char const *argv[])
 {
 	double start,end,time;
+	
 	start=gethrtime_x86();
 	printf("%f\n",start );
 
