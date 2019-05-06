@@ -3,12 +3,12 @@
 #include"hrtimer_x86.h"
 #include"functions.h"
 
-#define NUM_THREAD 2 //2 4 8
-#define TIMES 10 //10 100 10000 10000
+#define NUM_THREAD 8 //2 4 8
+#define TIMES 10000 //10 100 10000 10000
 
 volatile unsigned long lock;
 
-//pthread_barrier_t mutex;
+pthread_barrier_t mutex;
 
 
 void reverse_barrier(int cant){
@@ -35,24 +35,28 @@ void reverse_barrier(int cant){
 }
 
 void local_barrier(int cant){
-	int static counter = 0;
-	int static flag = 0;
+	static int  counter = 0;
+	static int flag = 0;
 	int mycount =0;
 
+	int local_sense = !flag;
 	tatas_lock_backoff(&lock);
 	if (counter==0)
 	{
-		flag=0;
+		//flag=0;
 	}
-	mycount = ++counter;
+	counter++,
+	mycount = counter;
 	unlock(&lock);
+
 
 	if (mycount==cant)
 	{
 		counter=0;
-		flag=1;
+		flag= !flag;
+	}else{
+		while(flag!=local_sense){}
 	}
-	while(flag==0){}
 }
 
 void* func_pthread(void* arg)
@@ -82,7 +86,6 @@ void* func_local(void* arg)
 	for (int i = 0; i < TIMES; ++i)
 	{
 		local_barrier(NUM_THREAD);
-		
 	}
 }
 
@@ -93,7 +96,7 @@ int main(int argc, char const *argv[])
 	double end,start;
 
 	pthread_t threads[NUM_THREAD];
-	//pthread_barrier_init(&mutex,NULL,NUM_THREAD);
+	pthread_barrier_init(&mutex,NULL,NUM_THREAD);
 	lock=0;
 	int ids[NUM_THREAD];
 
@@ -105,12 +108,11 @@ int main(int argc, char const *argv[])
 		pthread_create(&threads[i],NULL,func_local,&ids[i]);
 	}
 
-	end=gethrtime_x86();
-
 	for (int i = 0; i < NUM_THREAD; ++i)
 	{
 		pthread_join(threads[i],NULL);
 	}
+	end=gethrtime_x86();
 
 	printf("%f\n",end-start);
 	
